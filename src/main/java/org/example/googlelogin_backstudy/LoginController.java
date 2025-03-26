@@ -20,7 +20,7 @@ public class LoginController {
     private String clientSecret;
 
     private final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
-    private final String REDIRECT_URI = "https://developers.google.com/oauthplayground"; // 프론트와 동일하게 설정
+    private final String REDIRECT_URI = "http://localhost:8080/complete.html"; // 프론트와 동일하게 설정
 
     @GetMapping("/api/auth/client-id")
     public ResponseEntity<String> getClientId() {
@@ -53,12 +53,15 @@ public class LoginController {
                 request,
                 Map.class
         );
-
+        System.out.println("error1");
         // 응답에서 access_token 추출
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
+            System.out.println("error2");
             String accessToken = (String) response.getBody().get("access_token");
+            System.out.println("accessToken >> " + accessToken);
             return ResponseEntity.ok(Collections.singletonMap("access_token", accessToken));
         } else {
+            System.out.println("error3");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Failed to get access token");
         }
     }
