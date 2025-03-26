@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google OAuth Login</title>
+  <style>
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #f5f7fa, #c3cfe2);
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      text-align: center;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+    h1 {
+      color: #333;
+    }
+    .login-btn {
+      background-color: #4285F4;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      font-size: 16px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+    .login-btn:hover {
+      background-color: #357ae8;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+  <h1>Google OAuth Login</h1>
+  <button id="google-login-btn" class="login-btn">Login with Google</button>
+</div>
+
+<script>
+  document.getElementById("google-login-btn").addEventListener("click", function() {
+    var clientId = "your-client-id";  // 여기에 백엔드에서 설정한 client ID 직접 입력
+    var redirectUri = "http://localhost:8080/complete.html";  // 로그인 성공 후 이동할 페이지
+    var scope = "email profile";
+    var responseType = "code";
+
+    var googleAuthUrl =
+            "https://accounts.google.com/o/oauth2/v2/auth"
+            + "?client_id=" + encodeURIComponent(clientId)
+            + "&redirect_uri=" + encodeURIComponent(redirectUri)
+            + "&response_type=" + encodeURIComponent(responseType)
+            + "&scope=" + encodeURIComponent(scope)
+            + "&access_type=offline"
+            + "&prompt=consent";
+
+    window.location.href = googleAuthUrl;
+  });
+</script>
+</body>
+</html>

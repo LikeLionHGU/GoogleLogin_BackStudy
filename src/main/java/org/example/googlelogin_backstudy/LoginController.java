@@ -22,6 +22,11 @@ public class LoginController {
     private final String GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
     private final String REDIRECT_URI = "https://developers.google.com/oauthplayground"; // 프론트와 동일하게 설정
 
+    @GetMapping("/api/auth/client-id")
+    public ResponseEntity<String> getClientId() {
+        return ResponseEntity.ok(clientId);
+    }
+
     @PostMapping("/api/auth/google/token")
     public ResponseEntity<?> googleLogin(@RequestParam String authorizationCode) {
         RestTemplate restTemplate = new RestTemplate();
