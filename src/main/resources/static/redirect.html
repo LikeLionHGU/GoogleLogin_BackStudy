@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Processing Login...</title>
+</head>
+<body>
+<h2>Processing Google Login...</h2>
+<script>
+    // 현재 URL에서 authorization code 추출
+    const params = new URLSearchParams(window.location.search);
+    const authorizationCode = params.get("code");
+
+    if (authorizationCode) {
+        console.log("Authorization Code:", authorizationCode);
+
+        // 백엔드로 authorizationCode 전송
+        fetch("http://localhost:8080/api/auth/google/token", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({ authorizationCode })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.access_token) {
+                    console.log("Access Token:", data.access_token);
+                    alert("Login successful! Access Token: " + data.access_token);
+
+                    // 토큰 저장 (예: 로컬 스토리지)
+                    // localStorage.setItem("access_token", data.access_token);
+
+                    // 이후 페이지로 이동 (예: 대시보드)
+                    window.location.href = "/complete.html";
+                } else {
+                    console.error("Failed to get access token");
+                    alert("Login failed");
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                alert("An error occurred while logging in.");
+            });
+    } else {
+        console.error("No authorization code found.");
+        alert("Authorization code not found. Please try logging in again.");
+    }
+</script>
+</body>
+</html>
