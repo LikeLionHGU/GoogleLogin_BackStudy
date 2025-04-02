@@ -46,38 +46,21 @@
 
 <script>
   document.getElementById("google-login-btn").addEventListener("click", function() {
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET", "http://localhost:8080/api/auth/client-id", true);  // 여기 코드 바꿔야해.
-    xhr.setRequestHeader("Content-Type", "application/json");
+    var clientId = "10952883782-tfnggg0q9gns90bihel2caaioshjunq6.apps.googleusercontent.com";  // 여기에 백엔드에서 설정한 client ID 직접 입력
+    var redirectUri = "http://localhost:8080/complete.html";  // 로그인 성공 후 이동할 페이지
+    var scope = "email profile";
+    var responseType = "code";
 
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState === 4) {
-        if (xhr.status === 200) {
-          var clientId = xhr.responseText.trim();
-          console.log("Received clientId:", clientId);
+    var googleAuthUrl =
+            "https://accounts.google.com/o/oauth2/v2/auth"
+            + "?client_id=" + encodeURIComponent(clientId)
+            + "&redirect_uri=" + encodeURIComponent(redirectUri)
+            + "&response_type=" + encodeURIComponent(responseType)
+            + "&scope=" + encodeURIComponent(scope)
+            + "&access_type=offline"
+            + "&prompt=consent";
 
-          var redirectUri = "http://localhost:8080/redirect.html";  // 여기는 resourse/static 밑에 complete.html 만들어서 로그인이 성공하면 거기로 넘어가도록 해준 코드야. (수정하렴)
-          var scope = "email profile";
-          var responseType = "code";
-
-          var googleAuthUrl =
-                  "https://accounts.google.com/o/oauth2/v2/auth"
-                  + "?client_id=" + encodeURIComponent(clientId)
-                  + "&redirect_uri=" + encodeURIComponent(redirectUri)
-                  + "&response_type=" + encodeURIComponent(responseType)
-                  + "&scope=" + encodeURIComponent(scope)
-                  + "&access_type=offline"
-                  + "&prompt=consent";
-
-          window.location.href = googleAuthUrl;
-        } else {
-          console.error("Error fetching client ID:", xhr.status, xhr.responseText);
-          alert("Error: Failed to retrieve client ID from server.");
-        }
-      }
-    };
-
-    xhr.send();
+    window.location.href = googleAuthUrl;
   });
 </script>
 </body>

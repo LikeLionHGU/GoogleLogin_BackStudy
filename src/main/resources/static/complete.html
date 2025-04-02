@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Complete</title>
+    <title>OAuth Login Complete</title>
     <style>
         body {
             display: flex;
@@ -14,47 +14,141 @@
             font-family: Arial, sans-serif;
         }
         .container {
-            text-align: center;
             background: white;
             padding: 30px;
             border-radius: 10px;
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
         }
         h1 {
             color: #333;
         }
-        .success-message {
-            color: green;
-            font-size: 18px;
-            margin-top: 10px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
         }
-        .home-btn {
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background: #4285F4;
+            color: white;
+        }
+        .token-btn {
+            margin-top: 20px;
             background-color: #4285F4;
             color: white;
             border: none;
-            padding: 12px 20px;
+            padding: 10px 15px;
             font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
             transition: 0.3s;
-            margin-top: 15px;
         }
-        .home-btn:hover {
+        .token-btn:hover {
             background-color: #357ae8;
+        }
+        #tokenDisplay {
+            margin-top: 20px;
+            color: #333;
+            word-wrap: break-word;
+            max-width: 100%;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h1>Login Successful 🎉</h1>
-    <p class="success-message">You have successfully logged in with Google.</p>
-    <button class="home-btn" onclick="goHome()">Go to Home</button>
+    <h1>OAuth Login Successful</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>Parameter</th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tbody id="paramsTable">
+        </tbody>
+    </table>
+    <button class="token-btn" onclick="showAccessToken()">Access Token 확인</button>
+<!--    <button class="token-btn" onclick="showAuthorizationCode()">인가 코드 보기</button>-->
+    <div id="tokenDisplay"></div>
 </div>
 
 <script>
-    function goHome() {
-        window.location.href = "/";
+    let access_token = null; // 엑세스 토큰을 저장할 변수
+
+    function getQueryParams() {
+        const params = new URLSearchParams(window.location.search);
+        let tableContent = "";
+        params.forEach((value, key) => {
+            tableContent += `<tr><td>${key}</td><td>${value}</td></tr>`;
+        });
+        document.getElementById("paramsTable").innerHTML = tableContent;
+        return params;
     }
+
+    function sendTokenToServer() {
+        const params = getQueryParams();
+        const authCode = params.get("code"); // URL에서 "code" 파라미터 추출 (인가 코드)
+
+        if (authCode) {
+            // POST 요청 보내기
+            fetch("http://localhost:8080/api/auth/google/token", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/x-www-form-urlencoded",
+                },
+                body: new URLSearchParams({
+                    code: authCode // 인가 코드를 요청 파라미터로 추가
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    return response.json(); // 서버 응답을 JSON으로 파싱
+                })
+                .then(data => {
+                    // 서버가 엑세스 토큰을 반환한다고 가정
+                    access_token = data.access_token; // 예: { "access_token": "abc123..." }
+                    console.log("Access Token received:", access_token);
+                })
+                .catch(error => {
+                    console.error("Error sending token:", error);
+                    document.getElementById("tokenDisplay").innerHTML = "토큰 요청 실패: " + error.message;
+                });
+        } else {
+            console.error("No authorization code found in URL");
+            document.getElementById("tokenDisplay").innerHTML = "인가 코드가 URL에 없습니다.";
+        }
+    }
+
+    function showAccessToken() {
+        const tokenDisplay = document.getElementById("tokenDisplay");
+        if (access_token) {
+            tokenDisplay.innerHTML = `Access Token: ${access_token}`;
+        } else {
+            tokenDisplay.innerHTML = "아직 엑세스 토큰을 받지 못했습니다.";
+        }
+    }
+
+    function showAuthorizationCode() {
+        const params = getQueryParams();
+        const authCode = params.get("code"); // URL에서 "code" 파라미터 추출
+
+        if (authCode) {
+            document.getElementById("tokenDisplay").innerHTML = `Authorization Code: ${authCode}`;
+        } else {
+            document.getElementById("tokenDisplay").innerHTML = "인가 코드가 URL에 없습니다.";
+        }
+    }
+
+    window.onload = sendTokenToServer; // 페이지 로드 시 서버에 요청
 </script>
 </body>
 </html>
