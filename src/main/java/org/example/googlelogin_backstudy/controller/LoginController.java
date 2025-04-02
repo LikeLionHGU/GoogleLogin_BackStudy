@@ -41,14 +41,15 @@ public class LoginController {
         RestTemplate restTemplate = new RestTemplate();
 
         // 요청 파라미터 설정 (application/x-www-form-urlencoded 형식)
+        // TODO : 1. requestParams 으로 요청 파라미터를 만들어주세요!
         MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
-        requestParams.add("code", authorizationCode);
+        requestParams.add("...", /* */); // "code"
         requestParams.add("client_id", clientId);
         requestParams.add("client_secret", clientSecret);
         requestParams.add("redirect_uri", REDIRECT_URI);
         requestParams.add("grant_type", "authorization_code");
 
-        // HTTP 요청 헤더 설정
+        // HTTP 요청 헤더 설정 - HTML폼 데이터를 전송하기 위해서 사용한다
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
