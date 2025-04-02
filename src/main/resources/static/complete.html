@@ -74,8 +74,8 @@
         <tbody id="paramsTable">
         </tbody>
     </table>
-    <button class="token-btn" onclick="showAccessToken()">Access Token 확인</button>
-<!--    <button class="token-btn" onclick="showAuthorizationCode()">인가 코드 보기</button>-->
+<!--    <button class="token-btn" onclick="showAccessToken()">Access Token 확인</button>-->
+    <button class="token-btn" onclick="showAuthorizationCode()">인가 코드 보기</button>
     <div id="tokenDisplay"></div>
 </div>
 
@@ -98,7 +98,7 @@
 
         if (authCode) {
             // POST 요청 보내기
-            fetch("http://localhost:8080/api/auth/google/token", {
+            fetch("/login/token/authorization", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded",
@@ -148,7 +148,7 @@
         }
     }
 
-    window.onload = sendTokenToServer; // 페이지 로드 시 서버에 요청
+   // window.onload = sendTokenToServer; // 페이지 로드 시 서버에 요청
 </script>
 </body>
 </html>
