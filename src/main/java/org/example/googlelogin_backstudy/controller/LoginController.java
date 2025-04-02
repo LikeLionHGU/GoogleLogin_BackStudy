@@ -43,26 +43,38 @@ public class LoginController {
         // 요청 파라미터 설정 (application/x-www-form-urlencoded 형식)
         // TODO : 1. requestParams 으로 요청 파라미터를 만들어주세요!
         MultiValueMap<String, String> requestParams = new LinkedMultiValueMap<>();
-        requestParams.add("...", /* */); // "code"
-        requestParams.add("client_id", clientId);
-        requestParams.add("client_secret", clientSecret);
-        requestParams.add("redirect_uri", REDIRECT_URI);
-        requestParams.add("grant_type", "authorization_code");
+        requestParams.add("...", );     // "code" 에 authorizationCode 를 넣어주세요!!
+        requestParams.add("...", );     // "client_id"를 알려주세요!!
+        requestParams.add("...", );     // "client_secret"를 알려주세요!!
+        requestParams.add("...", );     // "redirect_uri"를 알려주세요!!
+        requestParams.add("...", );     // "grant_type"을 알려주세요!!  @저희는 "authorization_code"를 사용하고 있답니다
 
         // HTTP 요청 헤더 설정 - HTML폼 데이터를 전송하기 위해서 사용한다
+        // TODO : 2. 헤더를 설정해 주세요! - 우리가 x-www-form-urlencoded 형식을 사용하고 있다는걸 알려줘야 한답니다 :)
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType. /* MediaType. 뒤에 올 코드는?? */);
 
         // HTTP 요청 본문 설정
-        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(requestParams, headers);
+        // TODO : 3. 위에 만들어둔 파라미터와 헤더로 실제 구글에 날릴 요청본문을 만들어 봅시다!
+        HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(/* 파라미터를 넣어주세요 */, /* 헤더를 넣어주세요 */);
 
         // 구글 OAuth 서버에 POST 요청 보내기
+        // TODO : 4. 마지막 단계입니다. 구글로 발싸해주세요!!!!
+        /*
+        필요한 정보는 4가지 입니다
+            1. GOOGLE_TOKEN_URL
+            2. HttpMethod가 POST라는 것 => HttpMethod. 다음 뭐가 와야 할까요?
+            3. 3번 단계에서 만들어둔 요청 본문
+            4. Map.class 넣어주기 - 응답을 Map 방식으로 받는다는 의미
+        */
         ResponseEntity<Map> response = restTemplate.exchange(
-                GOOGLE_TOKEN_URL,
-                HttpMethod.POST,
-                request,
+                구글토큰,
+                전달방식,
+                요청본문,
                 Map.class
         );
+
+
 
         // 응답에서 access_token 추출
         if (response.getStatusCode() == HttpStatus.OK && response.getBody() != null) {
