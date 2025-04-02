@@ -36,7 +36,7 @@ public class LoginController {
     private final RestTemplate restTemplate;
     private final JwtTokenProvider jwtTokenProvider;
 
-    @PostMapping("/api/auth/google/token")
+    @PostMapping("/login/token/authorization")
     public ResponseEntity<?> googleLogin(@RequestParam("code") String authorizationCode) {
         RestTemplate restTemplate = new RestTemplate();
 
@@ -72,8 +72,8 @@ public class LoginController {
         }
     }
 
-    @PostMapping("/userinfo")
-    public ResponseEntity<?> getUserInfoFromAccessToken(@RequestParam String access_token) {
+    @PostMapping("/login/token/access")
+    public ResponseEntity<?> getUserInfoFromAccessToken(@RequestParam("access_token") String access_token) {
         try {
             // 1. 엑세스 토큰으로 유저 정보 가져오기
             Map<String, Object> userInfo = fetchUserInfo(access_token);
@@ -136,7 +136,7 @@ public class LoginController {
                 });
     }
 
-    @GetMapping("/api/user/info")
+    @GetMapping("/login/token/jwt")
     public ResponseEntity<?> getUserInfo(@RequestHeader("Authorization") String authHeader) {
         try {
             // "Bearer " 접두사 제거
