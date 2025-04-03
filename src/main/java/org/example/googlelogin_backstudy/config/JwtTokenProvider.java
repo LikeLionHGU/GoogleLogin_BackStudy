@@ -36,8 +36,6 @@ public class JwtTokenProvider {
         Date ext = new Date();
         ext.setTime(ext.getTime() + expTime);
 
-        SecretKey key = Keys.secretKeyFor(io.jsonwebtoken.SignatureAlgorithm.HS256);
-
 //      payload를 담을 Map을 만들어 주었습니다.
         Map<String, Object> payload = new HashMap<>();
         //Map 타입을 가지고있는 payload에 테스트 : 테스트입니다(key:value 방식) 을 넣어주었습니다.
@@ -51,7 +49,7 @@ public class JwtTokenProvider {
                 .claims(payload)                   // 페이로드 설정 (setClaims 대신 최신 방식)
                 .subject("test")                // 주제 설정 (setSubject 대신 최신 방식)
                 .expiration(ext)                   // 만료 시간 설정 (setExpiration 대신 최신 방식)
-                .signWith(key)                     // 서명
+                .signWith(getSecretKey())                     // 서명
                 .compact();                        // JWT 문자열 생성
 
         return jwt;
